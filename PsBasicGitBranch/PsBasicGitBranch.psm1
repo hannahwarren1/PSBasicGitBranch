@@ -47,7 +47,11 @@ function Write-GitBranch {
 function prompt {
 	
 	# Set console title to current location
-	$host.ui.rawui.WindowTitle = $(get-location)
+	$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+	if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+		$title_prefix = "(Administrator) "
+	}
+	$host.ui.rawui.WindowTitle = $title_prefix += $(get-location)
 	
 	$prompt_base = "PS $($executionContext.SessionState.Path.CurrentLocation)"
 	$prompt_level = "$('>' * ($nestedPromptLevel + 1)) "
